@@ -60,7 +60,7 @@ cd louvain-algorithm
 
 You can install them manually as:
 ```bash
-pip install networkx numpy matplotlib
+pip install python-louvain networkx matplotlib
 ```
 
 ---
