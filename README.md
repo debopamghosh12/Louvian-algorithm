@@ -1,108 +1,160 @@
-Python Louvain Community Detection
+# Louvain Algorithm for Community Detection
 
-This project provides a simple, interactive Python script to detect communities in a graph using the Louvain algorithm.
+The **Louvain Algorithm** is an efficient method for detecting communities in large networks by maximizing modularity — a measure that quantifies the quality of community partitions.  
+This repository contains an implementation of the Louvain algorithm with visualization and analysis tools.
 
-You can build a graph by entering connections (edges) directly into the terminal. The script will then process the graph, identify distinct communities, and generate a visual representation of the results.
+---
 
-Description
+## 📘 Table of Contents
 
-The script uses the networkx library to build the graph and the python-louvain library to perform the community detection. The Louvain algorithm is a fast and efficient method for finding communities in large networks by optimizing a "modularity" score.
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Example](#example)
+- [Algorithm Steps](#algorithm-steps)
+- [Performance](#performance)
+- [References](#references)
+- [License](#license)
+- [Contributors](#contributors)
 
-The script will:
+---
 
-Prompt you to enter graph edges one by one.
+## 🧩 Overview
 
-Stop when you type done.
+The **Louvain method** (Blondel et al., 2008) is a hierarchical clustering algorithm for detecting communities in networks.  
+It works by repeatedly optimizing **modularity** locally and then aggregating nodes belonging to the same community, forming a smaller graph.  
+This process is repeated until modularity improvement becomes insignificant.
 
-Run the Louvain best_partition function to find communities.
+The algorithm is:
+- **Fast**
+- **Scalable**
+- **Widely used** in network science and social network analysis
 
-Print the detected communities and the final modularity score to the terminal.
+---
 
-Generate and save a louvain_user_graph_visualization.png image, coloring each node based on its community.
+## ✨ Features
 
-Requirements
+- Detects **hierarchical community structures**
+- Works with **weighted** and **unweighted** graphs
+- Scales to **large networks**
+- Includes visualization of communities
+- Outputs community membership and modularity score
 
-Python 3.x
+---
 
-networkx
+## ⚙️ Installation
 
-python-louvain
+Clone this repository and install dependencies:
 
-matplotlib
+```bash
+git clone https://github.com/debopamghosh12/Louvian-algorithm.git
+cd louvain-algorithm
+```
 
-Setup & Installation
+### Dependencies
+- Python ≥ 3.8  
+- `networkx`  
+- `numpy`  
+- `matplotlib` *(optional for visualization)*
 
-It is highly recommended to use a Python virtual environment to manage dependencies and avoid library conflicts.
+You can install them manually as:
+```bash
+pip install networkx numpy matplotlib
+```
 
-Clone the repository (or just download louvain_example.py)
+---
 
-Create a Virtual Environment:
-In your project folder, run:
+## 🚀 Usage
 
-python3 -m venv venv
+### Command Line Interface
+
+```bash
+python main.py --input data/graph.edgelist --output results/communities.txt
+```
+
+### As a Python Module
+
+```python
+from louvain import Louvain
+import networkx as nx
+
+# Load or create a graph
+G = nx.karate_club_graph()
+
+# Initialize and run Louvain algorithm
+louvain = Louvain(G)
+communities = louvain.run()
+
+print("Detected communities:", communities)
+print("Modularity:", louvain.modularity())
+```
+
+---
+
+## 📊 Example
+
+Example on **Zachary’s Karate Club** network:
+
+```python
+import networkx as nx
+from louvain import Louvain
+import matplotlib.pyplot as plt
+
+# Create test graph
+G = nx.karate_club_graph()
+
+# Run Louvain algorithm
+louvain = Louvain(G)
+communities = louvain.run()
+
+# Visualize results
+louvain.draw_communities(G, communities)
+```
+
+Output:
+- A community-colored network plot
+- Printed modularity score and community list
+
+---
+
+## 🔍 Algorithm Steps
+
+1. **Initialization** – Each node is placed in its own community.  
+2. **Local Optimization** – For each node, move it to the neighboring community that yields the largest modularity gain.  
+3. **Aggregation** – Nodes in the same community are merged to form a new graph.  
+4. **Iteration** – Repeat the two phases until modularity improvement becomes negligible.
+
+### Modularity Definition
+
+\[
+Q = \frac{1}{2m} \sum_{ij} [A_{ij} - \frac{k_i k_j}{2m}] \delta(c_i, c_j)
+\]
+
+Where:
+- \(A_{ij}\): adjacency matrix  
+- \(k_i\): degree of node *i*  
+- \(m\): total number of edges  
+- \(\delta(c_i, c_j)\): 1 if *i* and *j* are in the same community, 0 otherwise
+
+---
+
+## ⚡ Performance
+
+| Property | Value |
+|-----------|--------|
+| **Time Complexity** | ~O(n log n) (approximate) |
+| **Scalability** | Handles millions of nodes |
+| **Graph Type** | Weighted / Unweighted |
+| **Result Quality** | High modularity partitions |
+
+---
+
+## 📚 References
+
+- Blondel, V. D., Guillaume, J.-L., Lambiotte, R., & Lefebvre, E. (2008).  
+  *Fast unfolding of communities in large networks.*  
+  Journal of Statistical Mechanics: Theory and Experiment, 2008(10), P10008.
 
 
-(On Windows, you might use python -m venv venv)
-
-Activate the Environment:
-
-On macOS/Linux:
-
-source venv/bin/activate
-
-
-On Windows (Command Prompt):
-
-.\venv\Scripts\activate
-
-
-Install Required Libraries:
-With your virtual environment active, run:
-
-pip install networkx python-louvain matplotlib
-
-
-How to Run
-
-Make sure your virtual environment is active.
-
-Run the script from your terminal:
-
-python louvain_example.py
-
-
-Follow the prompts:
-Enter edges as pairs of nodes (e.g., A B or 0 1).
-
---- Create Your Graph ---
-Enter edges one by one (e.g., '0 1' or 'nodeA nodeB').
-Type 'done' when you are finished.
-Enter edge (or 'done'): 0 1
-Added edge: (0, 1). Graph now has 2 nodes and 1 edges.
-Enter edge (or 'done'): 1 2
-Added edge: (1, 2). Graph now has 3 nodes and 2 edges.
-Enter edge (or 'done'): 0 2
-Added edge: (0, 2). Graph now has 3 nodes and 3 edges.
-Enter edge (or 'done'): done
---- Graph creation complete ---
-
-
-Example Output
-
-After you type done, the script will process the graph and output the results.
-
-Terminal Output:
-
-Graph created with 3 nodes and 3 edges.
-Running Louvain algorithm to find best partition...
-Algorithm complete. Detected communities:
-  Community 0: ['0', '1', '2']
-
-Final Modularity Score: 0.0000
-
-Generating visualization (this may take a moment)...
-Visualization saved to 'louvain_user_graph_visualization.png'
-
-
-Image Output:
-A file named louvain_user_graph_visualization.png will be saved in the same directory, showing your graph with the communities colored.
+---
